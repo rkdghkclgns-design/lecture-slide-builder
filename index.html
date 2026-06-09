@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강의 슬라이드 빌더 · 디벨로켓에듀</title>
+<!-- Fallback redirect for environments without JS (URL-encoded Korean filename) -->
+<meta http-equiv="refresh" content="0; url=%EA%B0%95%EC%9D%98%20%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C%20%EB%B9%8C%EB%8D%94.html">
+<style>
+  :root{ --c-deep:#060e1f; --c-card:#14223a; --c-border:#2a4566; --c-accent:#3FC6F1; --c-text2:#B8C5D6; --c-muted:#6B7A92; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif;
+    background:radial-gradient(140% 120% at 50% -10%,#0a1730,#04080f);
+    color:var(--c-text2); display:flex; align-items:center; justify-content:center; min-height:100vh; padding:40px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .card{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:22px; max-width:440px }
+  .ring{ width:84px;height:84px;border-radius:22px;border:1px solid var(--c-border);background:var(--c-card);
+    display:flex;align-items:center;justify-content:center;color:var(--c-accent) }
+  h1{ color:#fff; font-size:26px; font-weight:800; margin:0; letter-spacing:-0.02em }
+  p{ color:var(--c-muted); font-size:15px; margin:0; line-height:1.6 }
+  a.go{ height:46px; padding:0 26px; border-radius:9px; background:var(--c-accent); color:#06243a;
+    font-weight:800; font-size:15px; text-decoration:none; display:inline-flex; align-items:center; gap:8px }
+  a.go:hover{ filter:brightness(1.08) }
+  .spin{ width:34px;height:34px;border:3px solid var(--c-border);border-top-color:var(--c-accent);
+    border-radius:50%;animation:spin 1s linear infinite }
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="ring">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M3 9h18M7 14h6"/></svg>
+    </div>
+    <h1>강의 슬라이드 빌더</h1>
+    <div class="spin" aria-hidden="true"></div>
+    <p>도구를 여는 중입니다… 자동으로 이동하지 않으면 아래 버튼을 누르세요.</p>
+    <a class="go" href="강의 슬라이드 빌더.html">빌더 열기 →</a>
+  </div>
+  <script>
+    // Robust client-side redirect (browser handles UTF-8 encoding of the Korean filename).
+    location.replace('강의 슬라이드 빌더.html');
+  </script>
+</body>
+</html>

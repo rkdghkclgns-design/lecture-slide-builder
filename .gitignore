@@ -1,0 +1,14 @@
+# Local tooling / plugin runtime state (not part of the deliverable)
+.bkit/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# Node (none used at runtime, but guard against accidental installs)
+node_modules/
+npm-debug.log*
