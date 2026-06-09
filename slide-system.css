@@ -1,6 +1,6 @@
 /* ============================================================
-   DECK DESIGN SYSTEM — 디벨로켓에듀
-   Dark navy + cyan accent · 1920×1080 · 14 patterns
+   DECK DESIGN SYSTEM — 디벨로켓에듀 (MapleStory 베이지 테마)
+   Warm beige + orange accent · 1920×1080 · 14 patterns
    Tokens & rules transcribed from the Deck Design System Manual v1.0
    ============================================================ */
 
@@ -8,25 +8,25 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap');
 
 :root {
-  /* 배경 / 컨테이너 */
-  --bg: #0a1428;
-  --bg-deep: #060e1f;
-  --card: #14223a;
-  --img-frame: #0f192d;
-  --border: #2a4566;
-  /* 액센트 / 강조 */
-  --accent: #3FC6F1;
-  --accent-bg: #15314a;
-  --red: #E94560;
-  --purple: #B194E8;
-  --amber: #F0B450;
-  /* 텍스트 / 표 */
-  --text: #FFFFFF;
-  --text-2: #B8C5D6;
-  --muted: #6B7A92;
-  --cell: #DBE2EC;
-  --cell-alt: #E9EEF4;
-  --ink: #111827;
+  /* 배경 / 컨테이너 — MapleStory 베이지(라이트) 테마 */
+  --bg: #FBF3E1;
+  --bg-deep: #F1E1C2;
+  --card: #FFFCF4;
+  --img-frame: #F5EAD3;
+  --border: #E59440;
+  /* 액센트 / 강조 — 주황 */
+  --accent: #C9661C;
+  --accent-bg: #FBE6CC;
+  --red: #D4543A;
+  --purple: #8E63C6;
+  --amber: #C8861E;
+  /* 텍스트 / 표 — 따뜻한 브라운 */
+  --text: #2E2114;
+  --text-2: #5C4A37;
+  --muted: #A2895F;
+  --cell: #FFFFFF;
+  --cell-alt: #FBEFD8;
+  --ink: #3A2A1A;
 
   --font: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   --mono: 'JetBrains Mono', 'Noto Sans KR', monospace;
@@ -41,7 +41,7 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(120% 120% at 100% 0%, #0d1a33 0%, var(--bg) 42%, var(--bg-deep) 100%);
+    radial-gradient(120% 120% at 100% 0%, #FFFDF6 0%, var(--bg) 42%, var(--bg-deep) 100%);
   color: var(--text-2);
   font-family: var(--font);
   font-size: 28px;
@@ -265,9 +265,9 @@
 .cards-2 .card h3 { font-size: 38px; font-weight: 700; color: var(--text); margin: 0; line-height: 1.2; }
 .cards-2 .card p { font-size: 28px; color: var(--text-2); margin: 0; line-height: 1.55; text-wrap: pretty; }
 /* color accents */
-.cards-2 .card.purple .icon { background: #2a2342; }
+.cards-2 .card.purple .icon { background: #EEE5F8; }
 .cards-2 .card.purple .icon svg { stroke: var(--purple); }
-.cards-2 .card.amber .icon { background: #3a3220; }
+.cards-2 .card.amber .icon { background: #F6ECCB; }
 .cards-2 .card.amber .icon svg { stroke: var(--amber); }
 
 /* ============================================================
@@ -407,11 +407,11 @@ table.deck-table tbody tr:last-child td:last-child { border-bottom-right-radius:
   color: var(--muted); letter-spacing: 0.04em;
 }
 .cards-2 .card .card-idx { top: 44px; }
-.icon { box-shadow: inset 0 0 0 1px #244a6b; }
+.icon { box-shadow: inset 0 0 0 1px #EBC68F; }
 
 /* checklist / bullet hairline separation for scannability */
 .checklist .check-item { padding: 17px 0; }
-.checklist .check-item + .check-item { border-top: 1px solid #1d2f4a; }
+.checklist .check-item + .check-item { border-top: 1px solid #EFE0C0; }
 
 /* running footer — brand + page number (content slides only) */
 .slide-foot {
@@ -433,18 +433,18 @@ table.deck-table tbody tr:last-child td:last-child { border-bottom-right-radius:
   transition: outline-color 0.15s, background 0.15s;
 }
 body.editing .slide [data-edit][contenteditable="true"]:hover {
-  outline-color: rgba(63,198,241,0.45);
-  background: rgba(63,198,241,0.05);
+  outline-color: rgba(201,102,28,0.45);
+  background: rgba(201,102,28,0.06);
 }
 .slide [data-edit][contenteditable="true"]:focus {
   outline-color: var(--accent);
-  background: rgba(63,198,241,0.07);
+  background: rgba(201,102,28,0.08);
 }
 body.editing .frame { cursor: pointer; }
 body.editing .frame::after {
   content: '클릭하여 이미지 교체';
   position: absolute; inset: auto 0 0 0;
-  background: rgba(6,14,31,0.82); color: var(--accent);
+  background: rgba(46,33,20,0.82); color: #FBE6CC;
   font-family: var(--mono); font-size: 18px; text-align: center;
   padding: 10px; opacity: 0; transition: opacity 0.15s; pointer-events: none;
 }

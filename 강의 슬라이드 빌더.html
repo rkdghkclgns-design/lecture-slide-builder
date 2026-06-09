@@ -7,9 +7,9 @@
 <link rel="stylesheet" href="slide-system.css">
 <style>
   :root{
-    --c-bg:#0a1428; --c-deep:#060e1f; --c-panel:#0d1830; --c-card:#14223a;
-    --c-border:#2a4566; --c-accent:#3FC6F1; --c-accent-bg:#15314a;
-    --c-text:#FFFFFF; --c-text2:#B8C5D6; --c-muted:#6B7A92;
+    --c-bg:#F3E3C4; --c-deep:#F7EEDB; --c-panel:#FBF5E8; --c-card:#FFFCF4;
+    --c-border:#E59440; --c-accent:#C9661C; --c-accent-bg:#FBE6CC;
+    --c-text:#2E2114; --c-text2:#5C4A37; --c-muted:#A2895F; --c-red:#D4543A;
     --mono:'JetBrains Mono','Noto Sans KR',monospace;
     --ui:'Pretendard','Noto Sans KR',system-ui,sans-serif;
   }
@@ -26,8 +26,8 @@
     padding:0 22px; background:var(--c-bg); border-bottom:1px solid var(--c-border);
     z-index:30;
   }
-  #bar .brand{display:flex; align-items:center; gap:12px; font-weight:800; color:#fff; letter-spacing:-0.02em; font-size:18px}
-  #bar .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--c-accent);box-shadow:0 0 14px #3FC6F1}
+  #bar .brand{display:flex; align-items:center; gap:12px; font-weight:800; color:var(--c-text); letter-spacing:-0.02em; font-size:18px}
+  #bar .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--c-accent);box-shadow:0 0 12px #E08A2E}
   #bar .brand small{font-family:var(--mono);font-weight:500;color:var(--c-muted);font-size:12px;letter-spacing:.06em}
   #bar .spacer{flex:1}
   .btn{
@@ -35,23 +35,23 @@
     background:var(--c-card); color:var(--c-text2); font-weight:600; font-size:14px;
     display:inline-flex; align-items:center; gap:8px; transition:.14s;
   }
-  .btn:hover{border-color:var(--c-accent); color:#fff}
-  .btn.primary{background:var(--c-accent); color:#06243a; border-color:var(--c-accent); font-weight:800}
-  .btn.primary:hover{filter:brightness(1.08); color:#06243a}
+  .btn:hover{border-color:var(--c-accent); color:var(--c-text)}
+  .btn.primary{background:var(--c-accent); color:#fff; border-color:var(--c-accent); font-weight:800}
+  .btn.primary:hover{filter:brightness(1.06); color:#fff}
   .btn.on{background:var(--c-accent-bg); border-color:var(--c-accent); color:var(--c-accent)}
   .btn svg{width:17px;height:17px}
   .menu{position:relative}
   .menu .pop{
     position:absolute; right:0; top:46px; background:var(--c-card); border:1px solid var(--c-border);
     border-radius:11px; padding:7px; min-width:210px; display:none; flex-direction:column; gap:2px;
-    box-shadow:0 18px 50px rgba(0,0,0,.5); z-index:40;
+    box-shadow:0 16px 40px rgba(120,80,30,.22); z-index:40;
   }
   .menu.open .pop{display:flex}
   .menu .pop button{
     text-align:left; background:transparent; border:none; color:var(--c-text2);
     padding:11px 12px; border-radius:7px; font-size:14px; display:flex; gap:11px; align-items:center;
   }
-  .menu .pop button:hover{background:var(--c-accent-bg); color:#fff}
+  .menu .pop button:hover{background:var(--c-accent-bg); color:var(--c-text)}
   .menu .pop button small{display:block;color:var(--c-muted);font-size:11.5px;font-weight:500;margin-top:2px}
   .menu .pop button .ic{width:30px;height:30px;flex:none;border-radius:7px;background:var(--c-accent-bg);display:flex;align-items:center;justify-content:center;color:var(--c-accent)}
   .menu .pop .sep{height:1px;background:var(--c-border);margin:5px 4px}
@@ -68,7 +68,7 @@
     flex:1; height:46px; background:transparent; border:none; color:var(--c-muted);
     font-weight:700; font-size:14px; position:relative;
   }
-  .tabs button.active{color:#fff}
+  .tabs button.active{color:var(--c-text)}
   .tabs button.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--c-accent)}
   .tabpane{flex:1; overflow-y:auto; padding:18px; display:none; flex-direction:column; gap:14px}
   .tabpane.active{display:flex}
@@ -103,6 +103,17 @@
   }
   .srow select:focus{outline:none;border-color:var(--c-accent)}
 
+  /* loaded MD list (ordered, reorderable) */
+  .mdlist{display:flex;flex-direction:column;gap:7px}
+  .mdlist:empty{display:none}
+  .mdrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:var(--c-card);border:1px solid var(--c-border)}
+  .mdrow .no{font-family:var(--mono);font-size:12px;color:var(--c-accent);width:24px;flex:none;text-align:center}
+  .mdrow .nm{flex:1;font-size:12.5px;color:var(--c-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mdrow .mv{display:flex;gap:4px;flex:none}
+  .mdrow .ic{width:24px;height:24px;border-radius:6px;border:1px solid var(--c-border);background:var(--c-deep);color:var(--c-muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;transition:.12s}
+  .mdrow .ic:hover{border-color:var(--c-accent);color:var(--c-accent)}
+  .mdrow .ic.rm:hover{border-color:var(--c-red);color:var(--c-red)}
+
   /* image grid */
   .imggrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .imgcell{
@@ -123,28 +134,31 @@
   }
   .dropzone svg{width:26px;height:26px;color:var(--c-accent)}
   .dropzone div{font-size:13px}
-  .dropzone div b{color:#fff}
+  .dropzone div b{color:var(--c-text)}
   .dropzone small{font-size:11px;color:var(--c-muted)}
   .dropzone code{font-family:var(--mono);color:var(--c-accent);font-size:11px}
   .dropzone:hover,.dropzone.over{border-color:var(--c-accent);background:var(--c-accent-bg)}
   .poolgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
   .poolcell{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--c-border);background:var(--c-deep)}
   .poolcell img{width:100%;height:100%;object-fit:cover}
-  .poolcell .nm{position:absolute;left:0;right:0;bottom:0;background:rgba(6,14,31,.82);color:var(--c-text2);font-size:9px;font-family:var(--mono);padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .poolcell .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(6,14,31,.85);color:#fff;border:none;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transition:.12s}
+  .poolcell .nm{position:absolute;left:0;right:0;bottom:0;background:rgba(46,33,20,.82);color:#FBE6CC;font-size:9px;font-family:var(--mono);padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .poolcell .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(46,33,20,.85);color:#fff;border:none;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transition:.12s}
   .poolcell:hover .rm{opacity:1}
   .poolcell .rm:hover{background:var(--c-red)}
 
   /* ---------- stage area ---------- */
-  #stage{flex:1; position:relative; background:radial-gradient(140% 120% at 50% -10%,#0a1730,#04080f); min-width:0; display:flex}
+  #stage{flex:1; position:relative; background:radial-gradient(140% 120% at 50% -10%,#FBF4E6,#EDDCBC); min-width:0; display:flex}
   deck-stage{flex:1}
   deck-stage:not(:defined){visibility:hidden}
+  /* landing view: deck-stage's :host is position:fixed and would paint over the
+     #empty overlay, so hide it via visibility (keeps layout — no re-fit needed). */
+  body.landing deck-stage{visibility:hidden; pointer-events:none}
 
   /* empty state */
   #empty{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:26px; text-align:center; padding:40px}
   #empty.hide{display:none}
   #empty .ring{width:96px;height:96px;border-radius:24px;border:1px solid var(--c-border);background:var(--c-card);display:flex;align-items:center;justify-content:center;color:var(--c-accent)}
-  #empty h2{color:#fff;font-size:30px;font-weight:800;margin:0;letter-spacing:-0.02em}
+  #empty h2{color:var(--c-text);font-size:30px;font-weight:800;margin:0;letter-spacing:-0.02em}
   #empty p{color:var(--c-muted);font-size:15px;margin:0;max-width:440px;line-height:1.6}
   #empty .steps{display:flex;gap:14px;margin-top:6px}
   #empty .step{background:var(--c-card);border:1px solid var(--c-border);border-radius:12px;padding:14px 18px;width:150px;text-align:left}
@@ -152,10 +166,10 @@
   #empty .step .t{color:var(--c-text2);font-size:13px;margin-top:6px;line-height:1.45}
 
   /* toast */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--c-card);border:1px solid var(--c-accent);color:#fff;padding:13px 22px;border-radius:11px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--c-card);border:1px solid var(--c-accent);color:var(--c-text);padding:13px 22px;border-radius:11px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:0 12px 32px rgba(120,80,30,.28)}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   /* busy overlay */
-  #busy{position:fixed;inset:0;background:rgba(4,8,15,.78);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;z-index:90}
+  #busy{position:fixed;inset:0;background:rgba(247,238,220,.86);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;z-index:90}
   #busy.show{display:flex}
   #busy .spin{width:54px;height:54px;border:4px solid var(--c-border);border-top-color:var(--c-accent);border-radius:50%;animation:spin 1s linear infinite}
   #busy .lbl{color:var(--c-text2);font-size:15px;font-weight:600}
@@ -207,15 +221,17 @@
       </div>
 
       <div class="tabpane active" data-pane="input">
-        <label class="fl">마크다운 교안</label>
+        <label class="fl">마크다운 교안 <span style="color:var(--c-muted);font-weight:400;text-transform:none;letter-spacing:0">· .md 여러 개 = 순서대로 연결</span></label>
         <textarea id="md" placeholder="# 강의 제목&#10;&#10;도입 문장…&#10;&#10;## 1. 첫 단원 (⏱ 60분)&#10;### 1.1. 소주제&#10;#### Key Concept&#10;*   **용어** 설명&#10;#### 구체적 사례&#10;*   **사례명** 설명"></textarea>
         <div class="row">
           <button class="btn" id="loadMd">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L8 8m4-4 4 4M4 20h16"/></svg>
-            .md 불러오기
+            .md 불러오기 (여러 개)
           </button>
           <button class="btn" id="sampleBtn">예제 채우기</button>
         </div>
+        <label class="fl" id="mdListLabel" style="display:none">불러온 MD <span style="color:var(--c-muted);font-weight:400;text-transform:none;letter-spacing:0">· 위에서부터 순서대로 연결 · ▲▼ 순서 변경</span></label>
+        <div id="mdList" class="mdlist"></div>
 
         <label class="fl" style="margin-top:4px">이미지 첨부 <span style="color:var(--c-muted);font-weight:400;text-transform:none;letter-spacing:0">· 선택 · 여러 장 가능</span></label>
         <div id="dropZone" class="dropzone">
@@ -229,8 +245,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5L13 3Z"/></svg>
           슬라이드 생성
         </button>
-        <div class="hint">규칙에 따라 <b>제목·리스트·이미지 구조</b>를 분석해 14개 패턴으로 자동 배치합니다. 생성 후 <b>슬라이드</b> 탭에서 패턴을 바꾸고, <b>편집</b>으로 텍스트·이미지를 직접 고칠 수 있어요.</div>
-        <input type="file" id="mdFile" accept=".md,.markdown,.txt" hidden>
+        <div class="hint"><b>교수안 + 슬라이드 편성안</b>을 함께 불러오면, 편성안의 구조·순서·문구에 맞춰 교수안 내용(표 등)으로 슬라이드를 합성합니다. 단일 교안만 넣으면 <b>제목·리스트·이미지 구조</b>를 분석해 14개 패턴으로 자동 배치합니다. 생성 후 <b>슬라이드</b> 탭에서 패턴을 바꾸고 <b>편집</b>으로 직접 고칠 수 있어요.</div>
+        <input type="file" id="mdFile" accept=".md,.markdown,.txt" multiple hidden>
       </div>
 
       <div class="tabpane" data-pane="slides">
@@ -262,7 +278,7 @@
           <p>왼쪽 <b>입력</b> 패널에 마크다운 교안을 넣고 이미지를 첨부한 뒤 <b>슬라이드 생성</b>을 누르면, 디벨로켓에듀 디자인 시스템 규칙에 맞춰 슬라이드를 만들어 드립니다.</p>
         </div>
         <div class="steps">
-          <div class="step"><div class="n">STEP 01</div><div class="t">마크다운 교안 붙여넣기 또는 .md 불러오기</div></div>
+          <div class="step"><div class="n">STEP 01</div><div class="t">마크다운 교안(또는 교수안+편성안) 붙여넣기·불러오기</div></div>
           <div class="step"><div class="n">STEP 02</div><div class="t">이미지 끌어다 놓기 · 자동 매칭</div></div>
           <div class="step"><div class="n">STEP 03</div><div class="t">슬라이드 생성 · 패턴/텍스트 수정</div></div>
           <div class="step"><div class="n">STEP 04</div><div class="t">PPTX · PDF · HTML 내보내기</div></div>
@@ -282,6 +298,7 @@
   <script src="parser.js"></script>
   <script src="patterns.js"></script>
   <script src="infer.js"></script>
+  <script src="compose.js"></script>
   <script src="pptx-export.js"></script>
   <script src="deck-stage.js"></script>
   <script src="builder.js"></script>

@@ -1,5 +1,6 @@
 # Local tooling / plugin runtime state (not part of the deliverable)
 .bkit/
+.claude/
 
 # OS / editor cruft
 .DS_Store

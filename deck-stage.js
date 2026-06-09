@@ -124,7 +124,7 @@
       position: fixed;
       inset: 0;
       display: block;
-      background: #000;
+      background: #4A3526;
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;

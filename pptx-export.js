@@ -9,9 +9,9 @@
 
   // tokens (no #)
   var C = {
-    bg: '0A1428', deep: '060E1F', card: '14223A', frame: '0F192D', border: '2A4566',
-    accent: '3FC6F1', accentBg: '15314A', red: 'E94560', purple: 'B194E8', amber: 'F0B450',
-    text: 'FFFFFF', text2: 'B8C5D6', muted: '6B7A92', cell: 'DBE2EC', cellAlt: 'E9EEF4', ink: '111827'
+    bg: 'FBF3E1', deep: 'F1E1C2', card: 'FFFCF4', frame: 'F5EAD3', border: 'E59440',
+    accent: 'C9661C', accentBg: 'FBE6CC', red: 'D4543A', purple: '8E63C6', amber: 'C8861E',
+    text: '2E2114', text2: '5C4A37', muted: 'A2895F', cell: 'FFFFFF', cellAlt: 'FBEFD8', ink: '3A2A1A'
   };
   var FONT = 'Pretendard', MONO = 'JetBrains Mono';
   function IN(px) { return px / 144; }

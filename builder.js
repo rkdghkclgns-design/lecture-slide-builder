@@ -10,7 +10,8 @@
   var state = {
     specs: [],            // slide specs aligned to sections
     imgMap: {},           // imageId / slotId → dataURL
-    uploads: []           // {name, url}
+    uploads: [],          // {name, url}
+    mdDocs: []            // ordered {name, text} markdown files → concatenated in list order
   };
   var deck = null;
   var specByEl = new WeakMap();
@@ -50,15 +51,92 @@
     });
   });
 
-  /* ---------------- input ---------------- */
+  /* ---------------- input: markdown files (multiple · ordered) ---------------- */
+  // Escape user filenames before injecting into the list markup.
+  function escAttr(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function readText(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result || '')); };
+      r.onerror = function () { reject(r.error || new Error('read error')); };
+      r.readAsText(file);
+    });
+  }
+  // concatenate loaded docs in list order (trailing-trimmed, blank-line joined)
+  function joinMdDocs() {
+    return state.mdDocs
+      .map(function (d) { return (d.text || '').replace(/\s+$/, ''); })
+      .filter(function (t) { return t.length; })
+      .join('\n\n');
+  }
+  function syncMdTextarea() {
+    if (state.mdDocs.length) $('#md').value = joinMdDocs();
+  }
+  function renderMdList() {
+    var list = $('#mdList'); if (!list) return;
+    var has = state.mdDocs.length > 0;
+    if ($('#mdListLabel')) $('#mdListLabel').style.display = has ? 'block' : 'none';
+    list.innerHTML = state.mdDocs.map(function (d, i) {
+      var nm = escAttr(d.name || ('md' + (i + 1)));
+      return '<div class="mdrow" data-i="' + i + '">' +
+        '<span class="no">' + String(i + 1).padStart(2, '0') + '</span>' +
+        '<span class="nm" title="' + nm + '">' + nm + '</span>' +
+        '<span class="mv">' +
+          '<button class="ic up" title="위로" aria-label="위로">▲</button>' +
+          '<button class="ic dn" title="아래로" aria-label="아래로">▼</button>' +
+          '<button class="ic rm" title="제거" aria-label="제거">×</button>' +
+        '</span></div>';
+    }).join('');
+    $$('.mdrow', list).forEach(function (row) {
+      var i = +row.dataset.i;
+      $('.up', row).addEventListener('click', function () { moveMdDoc(i, i - 1); });
+      $('.dn', row).addEventListener('click', function () { moveMdDoc(i, i + 1); });
+      $('.rm', row).addEventListener('click', function () { removeMdDoc(i); });
+    });
+  }
+  function moveMdDoc(from, to) {
+    if (to < 0 || to >= state.mdDocs.length || from === to) return;
+    var arr = state.mdDocs.slice();
+    arr.splice(to, 0, arr.splice(from, 1)[0]);
+    state.mdDocs = arr;
+    syncMdTextarea(); renderMdList();
+  }
+  function removeMdDoc(i) {
+    state.mdDocs = state.mdDocs.slice(0, i).concat(state.mdDocs.slice(i + 1));
+    syncMdTextarea(); renderMdList();
+  }
+  function addMdFiles(fileList) {
+    var files = Array.prototype.slice.call(fileList || []);
+    if (!files.length) return;
+    // read all in parallel; Promise.all preserves the FileList order regardless
+    // of which read resolves first, so concatenation stays deterministic.
+    Promise.all(files.map(readText)).then(function (texts) {
+      var newDocs = files.map(function (f, k) { return { name: f.name, text: texts[k] }; });
+      state.mdDocs = state.mdDocs.concat(newDocs);   // immutable append (consistent with move/remove)
+      syncMdTextarea(); renderMdList();
+      toast(files.length + '개 MD 불러옴 · 순서대로 연결 (총 ' + state.mdDocs.length + '개)');
+    }).catch(function (err) {
+      console.error(err); toast('MD 불러오기 실패: ' + err.message);
+    });
+  }
   $('#mdFile').addEventListener('change', function (e) {
-    var f = e.target.files[0]; if (!f) return;
-    var r = new FileReader();
-    r.onload = function () { $('#md').value = r.result; toast('불러왔습니다 · 생성을 눌러주세요'); };
-    r.readAsText(f);
+    addMdFiles(e.target.files);
+    e.target.value = '';   // reset so the same file(s) can be re-picked; order stays explicit
   });
   $('#loadMd').addEventListener('click', function () { $('#mdFile').click(); });
-  $('#sampleBtn').addEventListener('click', function () { $('#md').value = SAMPLE; toast('예제를 채웠습니다'); });
+  $('#sampleBtn').addEventListener('click', function () {
+    state.mdDocs = []; renderMdList();          // sample replaces the textarea wholesale
+    $('#md').value = SAMPLE; toast('예제를 채웠습니다');
+  });
+  // Hand-editing the combined textarea switches to free-form mode: the per-file
+  // MD list stops driving the textarea, so a later reorder/remove can never
+  // silently clobber manual edits. Programmatic value sets don't fire 'input'.
+  $('#md').addEventListener('input', function () {
+    if (state.mdDocs.length) { state.mdDocs = []; renderMdList(); }
+  });
   $('#genBtn').addEventListener('click', generate);
   $('#emptyGen').addEventListener('click', function () {
     if (!$('#md').value.trim()) $('#md').value = SAMPLE;
@@ -70,11 +148,19 @@
     $('#empty').classList.remove('hide');
     $('#backToDeck').style.display = deck ? 'inline-flex' : 'none';
     document.body.classList.remove('collapsed');
+    // deck-stage's :host is position:fixed, so it paints over the absolutely-
+    // positioned landing overlay. Hide it declaratively via `body.landing`
+    // (CSS visibility) — keeps layout/measurement intact (no resize re-fit),
+    // leaves the element's inline style clean (so exports clone it visible),
+    // and matches the existing body.collapsed / body.editing idiom.
+    document.body.classList.add('landing');
     selectTab('input');
   }
   $('#homeBtn').addEventListener('click', goHome);
   $('#backToDeck').addEventListener('click', function () {
-    if (deck) $('#empty').classList.add('hide');
+    if (!deck) return;
+    document.body.classList.remove('landing');
+    $('#empty').classList.add('hide');
   });
 
   /* ---------------- generation ---------------- */
@@ -84,8 +170,16 @@
     busy(true, '교안을 분석하고 슬라이드를 만드는 중…');
     setTimeout(function () {
       try {
-        var doc = LectureParser.parse(md);
-        state.specs = DeckInfer.infer(doc);
+        // 교수안 + 슬라이드 편성안이 함께 들어오면 "편성안 모드"로 합성한다.
+        // (구조·순서·문구 = 편성안, 표 등 상세 내용 = 교수안)
+        var sources = state.mdDocs.length ? state.mdDocs : [{ name: '', text: md }];
+        var pair = window.DeckCompose ? DeckCompose.detect(sources) : null;
+        if (pair) {
+          state.specs = DeckCompose.compose(pair.lesson, pair.plan);
+        } else {
+          var doc = LectureParser.parse(md);
+          state.specs = DeckInfer.infer(doc);
+        }
         buildDeck();
         autoMatchUploads();
         applyImages();
@@ -94,8 +188,9 @@
         renderPool();
         $('#empty').classList.add('hide');
         document.body.classList.remove('collapsed');
+        document.body.classList.remove('landing');
         selectTab('slides');
-        toast(state.specs.length + '개 슬라이드를 만들었습니다');
+        toast(state.specs.length + '개 슬라이드를 만들었습니다' + (pair ? ' · 교수안+편성안 모드' : ''));
       } catch (err) {
         console.error(err); toast('오류: ' + err.message);
       }
@@ -245,9 +340,9 @@
   // render the attached-image pool (input tab + images tab)
   function renderPool() {
     var html = state.uploads.map(function (u, i) {
-      return '<div class="poolcell" data-i="' + i + '"><img src="' + u.url + '">' +
+      return '<div class="poolcell" data-i="' + i + '"><img src="' + escAttr(u.url) + '">' +
         '<button class="rm" title="제거">×</button>' +
-        '<div class="nm">' + (u.name || ('img' + i)) + '</div></div>';
+        '<div class="nm">' + escAttr(u.name || ('img' + i)) + '</div></div>';
     }).join('');
     ['#poolGrid', '#poolGrid2'].forEach(function (sel) {
       var g = $(sel); if (!g) return; g.innerHTML = html;
@@ -311,8 +406,8 @@
       var ph = (fr.querySelector('.ph') ? fr.querySelector('.ph').textContent : id);
       var cell = document.createElement('div');
       cell.className = 'imgcell' + (url ? ' assigned' : '');
-      cell.innerHTML = '<div class="thumb">' + (url ? '<img src="' + url + '">' : '+ 지정') + '</div>' +
-        '<div class="lab">' + (id || '') + '</div>';
+      cell.innerHTML = '<div class="thumb">' + (url ? '<img src="' + escAttr(url) + '">' : '+ 지정') + '</div>' +
+        '<div class="lab">' + escAttr(id || '') + '</div>';
       cell.addEventListener('click', function () { pickForSlot(id); });
       grid.appendChild(cell);
     });
@@ -331,7 +426,7 @@
         return '<option value="' + p[0] + '"' + (p[0] === spec.pattern ? ' selected' : '') + '>' + p[1] + '</option>';
       }).join('');
       row.innerHTML = '<span class="no">' + String(i + 1).padStart(2, '0') + '</span>' +
-        '<span class="nm">' + DeckPatterns.clip((spec.title || spec.pattern).replace(/<[^>]+>/g, ''), 26) + '</span>' +
+        '<span class="nm">' + escAttr(DeckPatterns.clip((spec.title || spec.pattern).replace(/<[^>]+>/g, ''), 26)) + '</span>' +
         '<select>' + opts + '</select>';
       row.querySelector('.nm').addEventListener('click', function () { if (deck) deck.goTo(i); });
       row.querySelector('.no').addEventListener('click', function () { if (deck) deck.goTo(i); });
@@ -463,8 +558,8 @@
       var safeJs = js.replace(/<\/(script)/gi, '<\\/$1');
       var html = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">' +
         '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-        '<title>' + title + '</title>' +
-        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:#060e1f}</style>' +
+        '<title>' + escAttr(title) + '</title>' +
+        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:#4A3526}</style>' +
         '<style>' + safeCss + '</style></head><body>' +
         clone.outerHTML +
         '<scr' + 'ipt>' + safeJs + '</scr' + 'ipt></body></html>';

@@ -1,6 +1,6 @@
 /* ============================================================
    patterns.js — 14 슬라이드 패턴 렌더러 + 자동 추론 엔진
-   All icons use hex stroke (#3FC6F1) per PPTX-compat rule.
+   All icons use hex stroke (#C9661C) per PPTX-compat rule.
    Each renderer returns the inner HTML of a <section class="slide …">.
    ============================================================ */
 (function (global) {
@@ -37,7 +37,7 @@
   var ICON_ORDER = ['target', 'bulb', 'puzzle', 'layers', 'compass', 'gear', 'chart', 'users', 'book', 'rocket', 'eye', 'spark', 'grid', 'shield'];
 
   function iconSvg(name, color) {
-    color = color || '#3FC6F1';
+    color = color || '#C9661C';
     var p = (ICON_PATHS[name] || ICON_PATHS.target).replace(/C/g, color);
     return '<svg viewBox="0 0 24 24" fill="none" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
   }
@@ -139,7 +139,7 @@
     var tones = ['', 'purple'];
     var cards = (s.cards || []).slice(0, 2).map(function (c, i) {
       var tone = c.tone || tones[i] || '';
-      var col = tone === 'purple' ? '#B194E8' : (tone === 'amber' ? '#F0B450' : '#3FC6F1');
+      var col = tone === 'purple' ? '#8E63C6' : (tone === 'amber' ? '#C8861E' : '#C9661C');
       return '<div class="card ' + tone + ' anim anim-' + (i + 2) + '">' +
         '<span class="card-idx">' + String(i + 1).padStart(2, '0') + '</span>' +
         '<div class="head"><div class="icon">' + iconSvg(c.icon || pickIcon(i), col) + '</div>' +
@@ -205,7 +205,7 @@
       '<div class="case">' +
         '<div class="text">' +
           '<div class="eyebrow red anim">CASE STUDY</div>' +
-          '<div class="divider anim" style="background:#E94560"></div>' +
+          '<div class="divider anim" style="background:#D4543A"></div>' +
           ed(inline(s.title || ''), 'h2', 'anim anim-2') +
           (s.body || []).slice(0, 2).map(function (p, i) { return ed(inline(p), 'p', 'body-text anim anim-' + (i + 2)); }).join('') +
           (s.source ? '<div class="src-wrap anim anim-4">' + ed(esc(s.source), 'div', 'source') + '</div>' : '') +
@@ -223,7 +223,7 @@
       '</div>';
     }).join('');
     return { cls: '', html:
-      '<div class="page-head"><div class="eyebrow red anim">CASE STUDY</div><div class="divider anim" style="background:#E94560"></div>' +
+      '<div class="page-head"><div class="eyebrow red anim">CASE STUDY</div><div class="divider anim" style="background:#D4543A"></div>' +
       ed(inline(s.title || ''), 'h2', 'page-title anim anim-2') + '</div>' +
       '<div class="case2"><div class="cols">' + cols + '</div></div>' };
   };
