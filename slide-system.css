@@ -9,25 +9,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gothic+A1:wght@400;500;700;800;900&display=swap'); /* MSW 테마 폰트 */
 
 :root {
-  /* 배경 / 컨테이너 — MapleStory 베이지(라이트) 테마 */
-  --bg: #FBF3E1;
-  --bg-deep: #F1E1C2;
-  --card: #FFFCF4;
-  --img-frame: #F5EAD3;
-  --border: #E59440;
+  /* 배경 / 컨테이너 — KDT 군청색(다크) 테마 */
+  --bg: #243463;
+  --bg-deep: #18243F;
+  --card: #2D3E70;
+  --img-frame: #1E2C50;
+  --border: #E8954A;
   /* 액센트 / 강조 — 주황 */
-  --accent: #C9661C;
-  --accent-bg: #FBE6CC;
-  --red: #D4543A;
-  --purple: #8E63C6;
-  --amber: #C8861E;
-  /* 텍스트 / 표 — 따뜻한 브라운 */
-  --text: #2E2114;
-  --text-2: #5C4A37;
-  --muted: #A2895F;
+  --accent: #F2A24E;
+  --accent-bg: #2F4170;
+  --red: #F47C6A;
+  --purple: #B79DE8;
+  --amber: #F5C24E;
+  /* 텍스트 / 표 — 라이트(다크 배경 대비) */
+  --text: #F1F4FB;
+  --text-2: #C3CCE4;
+  --muted: #8A95B8;
   --cell: #FFFFFF;
-  --cell-alt: #FBEFD8;
-  --ink: #3A2A1A;
+  --cell-alt: #E9EEF7;
+  --ink: #1B2440;
+  --deck-bg: #15203B;           /* 레터박스(슬라이드 둘레) — 다크 네이비 */
 
   --font: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   --mono: 'JetBrains Mono', 'Noto Sans KR', monospace;
@@ -42,7 +43,7 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(120% 120% at 100% 0%, #FFFDF6 0%, var(--bg) 42%, var(--bg-deep) 100%);
+    radial-gradient(120% 120% at 100% 0%, #34477E 0%, var(--bg) 42%, var(--bg-deep) 100%);
   color: var(--text-2);
   font-family: var(--font);
   font-size: 28px;
@@ -287,9 +288,9 @@
 .cards-2 .card h3 { font-size: 38px; font-weight: 700; color: var(--text); margin: 0; line-height: 1.2; }
 .cards-2 .card p { font-size: 28px; color: var(--text-2); margin: 0; line-height: 1.55; text-wrap: pretty; }
 /* color accents */
-.cards-2 .card.purple .icon { background: #EEE5F8; }
+.cards-2 .card.purple .icon { background: #322D5A; }
 .cards-2 .card.purple .icon svg { stroke: var(--purple); }
-.cards-2 .card.amber .icon { background: #F6ECCB; }
+.cards-2 .card.amber .icon { background: #3C3722; }
 .cards-2 .card.amber .icon svg { stroke: var(--amber); }
 
 /* ============================================================
@@ -429,11 +430,11 @@ table.deck-table tbody tr:last-child td:last-child { border-bottom-right-radius:
   color: var(--muted); letter-spacing: 0.04em;
 }
 .cards-2 .card .card-idx { top: 44px; }
-.icon { box-shadow: inset 0 0 0 1px #EBC68F; }
+.icon { box-shadow: inset 0 0 0 1px #3E4F82; }
 
 /* checklist / bullet hairline separation for scannability */
 .checklist .check-item { padding: 17px 0; }
-.checklist .check-item + .check-item { border-top: 1px solid #EFE0C0; }
+.checklist .check-item + .check-item { border-top: 1px solid #384672; }
 
 /* running footer — brand + page number (content slides only) */
 .slide-foot {
@@ -548,3 +549,8 @@ html[data-theme="msw"] .slide::after {
   border-width: 4px;
   border-radius: 28px;
 }
+/* MSW 라이트 테마 전용 보정 (KDT 다크가 기본값이므로 라이트 값으로 되돌림) */
+html[data-theme="msw"] { --deck-bg: #4A3526; }                 /* 레터박스: 우드 브라운 */
+html[data-theme="msw"] .cards-2 .card.purple .icon { background: #EEE5F8; }
+html[data-theme="msw"] .cards-2 .card.amber .icon { background: #F6ECCB; }
+html[data-theme="msw"] .checklist .check-item + .check-item { border-top-color: #EFE0C0; }

@@ -125,7 +125,7 @@
       top: var(--deck-top, 0px);   /* 호스트 앱에 헤더가 있으면 그 높이만큼 내려서 가림 방지 */
       right: 0; bottom: 0; left: 0;
       display: block;
-      background: #4A3526;
+      background: var(--deck-bg, #4A3526);   /* 테마별 레터박스: KDT 네이비 / MSW 브라운 */
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;

@@ -36,6 +36,7 @@
     document.documentElement.setAttribute('data-theme', state.theme);
     $$('#themeSeg button').forEach(function (b) { b.classList.toggle('on', b.dataset.theme === state.theme); });
     refreshLogo();
+    scheduleFit();
   }
   function blobToDataUrl(b) {
     return new Promise(function (res, rej) {
@@ -228,6 +229,7 @@
         renderSlideList();
         renderImageGrid();
         renderPool();
+        scheduleFit();
         $('#empty').classList.add('hide');
         document.body.classList.remove('collapsed');
         document.body.classList.remove('landing');
@@ -297,6 +299,42 @@
         sec.appendChild(f);
       }
     });
+  }
+
+  // ── 본문 슬라이드 자동 맞춤 ──
+  // 콘텐츠가 슬라이드 영역을 넘치면 본문 컨테이너를 축소해 한 페이지에 담는다.
+  // (인트로/파트/섹션/클로징/인용 등 bleed 슬라이드는 비율 고정이라 제외)
+  function fitSlides() {
+    if (!deck) return;
+    $$('section.slide', deck).forEach(function (sec) {
+      if (sec.classList.contains('bleed')) return;
+      // 본문 컨테이너 = page-head/footer를 제외한 flex:1 직계 자식
+      var box = null;
+      Array.prototype.slice.call(sec.children).some(function (ch) {
+        if (ch.classList.contains('page-head') || ch.classList.contains('slide-foot')) return false;
+        if (getComputedStyle(ch).flexGrow === '1') { box = ch; return true; }
+        return false;
+      });
+      if (!box) return;
+      box.style.transformOrigin = 'top center';
+      box.style.transform = 'none';                 // reset before measuring
+      // 가용 높이 = 슬라이드 콘텐츠 하단 - 본문 컨테이너 상단(머리글 아래).
+      // 컨테이너는 flex:1(min-height:auto)이라 콘텐츠만큼 늘어나므로 clientHeight를
+      // 그대로 쓰면 안 되고, 슬라이드 기하로 실제 여백을 계산한다.
+      var padBot = parseFloat(getComputedStyle(sec).paddingBottom) || 0;
+      var avail = (sec.clientHeight - padBot) - box.offsetTop;
+      var need = box.scrollHeight;                  // 넘친 박스의 실제 콘텐츠 높이
+      if (avail > 0 && need > avail + 1) {
+        box.style.transform = 'scale(' + (avail / need).toFixed(4) + ')';
+      }
+    });
+  }
+  // 웹폰트·레이아웃이 안정된 뒤 측정해야 정확(폰트 로드 대기 + rAF + 폴백).
+  function scheduleFit() {
+    var run = function () { requestAnimationFrame(fitSlides); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(run, run);
+    requestAnimationFrame(function () { requestAnimationFrame(fitSlides); });
+    setTimeout(fitSlides, 350);
   }
 
   // give every frame a stable id (use spec image id, else slot_N)
@@ -496,6 +534,7 @@
     renumberFooters();
     renderImageGrid();
     toast('패턴 변경: ' + pat);
+    scheduleFit();
   }
 
   // adapt fields when switching pattern so the new renderer has data
@@ -601,7 +640,7 @@
       var html = '<!DOCTYPE html><html lang="ko" data-theme="' + (state.theme || 'kdt') + '"><head><meta charset="utf-8">' +
         '<meta name="viewport" content="width=device-width,initial-scale=1">' +
         '<title>' + escAttr(title) + '</title>' +
-        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:#4A3526}' +
+        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:var(--deck-bg,#15203B)}' +
           (window.DECK_LOGO ? ':root{--deck-logo:url("' + window.DECK_LOGO + '")}' : '') + '</style>' +
         '<style>' + safeCss + '</style></head><body>' +
         clone.outerHTML +

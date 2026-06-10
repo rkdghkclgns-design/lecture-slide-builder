@@ -9,9 +9,9 @@
 
   // tokens (no #) — 테마별 색 (KDT 베이지+주황 / MSW 크림+파스텔)
   var C_KDT = {
-    bg: 'FBF3E1', deep: 'F1E1C2', card: 'FFFCF4', frame: 'F5EAD3', border: 'E59440',
-    accent: 'C9661C', accentBg: 'FBE6CC', red: 'D4543A', purple: '8E63C6', amber: 'C8861E',
-    text: '2E2114', text2: '5C4A37', muted: 'A2895F', cell: 'FFFFFF', cellAlt: 'FBEFD8', ink: '3A2A1A'
+    bg: '243463', deep: '18243F', card: '2D3E70', frame: '1E2C50', border: 'E8954A',
+    accent: 'F2A24E', accentBg: '2F4170', red: 'F47C6A', purple: 'B79DE8', amber: 'F5C24E',
+    text: 'F1F4FB', text2: 'C3CCE4', muted: '8A95B8', cell: 'FFFFFF', cellAlt: 'E9EEF7', ink: '1B2440'
   };
   var C_MSW = {
     bg: 'FFF8E6', deep: 'FFEECB', card: 'FFFDF6', frame: 'FFF5DD', border: 'F3994F',
