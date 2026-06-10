@@ -16,6 +16,48 @@
   var deck = null;
   var specByEl = new WeakMap();
 
+  /* ---------------- 테마(KDT / MSW) + 브랜드 로고 ----------------
+     KDT = 현재 베이지+주황, MSW = 메이플스토리 월드 코딩 교실 스킨.
+     html[data-theme]로 CSS 스킨을 전환하고, 테마별 로고를 우측 상단에 적용한다.
+     로고는 교체 가능한 에셋: assets/msw-logo.png(KDT) · assets/logo-worlds.png(MSW).
+     (CSS .slide::before 가 --deck-logo 사용 · PPTX/HTML export는 window.DECK_LOGO 사용) */
+  var LOGOS = { kdt: '', msw: '' };
+  function curTheme() {
+    try { return localStorage.getItem('deck.theme') === 'msw' ? 'msw' : 'kdt'; } catch (e) { return 'kdt'; }
+  }
+  function refreshLogo() {
+    var url = (state.theme === 'msw' ? LOGOS.msw : LOGOS.kdt) || LOGOS.kdt || LOGOS.msw || '';
+    window.DECK_LOGO = url;
+    document.documentElement.style.setProperty('--deck-logo', url ? 'url("' + url + '")' : 'none');
+  }
+  function applyTheme(t) {
+    state.theme = (t === 'msw') ? 'msw' : 'kdt';
+    try { localStorage.setItem('deck.theme', state.theme); } catch (e) {}
+    document.documentElement.setAttribute('data-theme', state.theme);
+    $$('#themeSeg button').forEach(function (b) { b.classList.toggle('on', b.dataset.theme === state.theme); });
+    refreshLogo();
+  }
+  function blobToDataUrl(b) {
+    return new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onload = function () { res(String(fr.result)); };
+      fr.onerror = function () { rej(fr.error || new Error('read error')); };
+      fr.readAsDataURL(b);
+    });
+  }
+  function loadLogo(key, path) {
+    fetch(path).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.blob(); })
+      .then(blobToDataUrl).then(function (u) { LOGOS[key] = u; refreshLogo(); })
+      .catch(function () { /* file:// 또는 에셋 없음 → 해당 테마 로고 생략 */ });
+  }
+  state.theme = curTheme();
+  applyTheme(state.theme);
+  loadLogo('kdt', 'assets/msw-logo.png');
+  loadLogo('msw', 'assets/logo-worlds.png');
+  $$('#themeSeg button').forEach(function (b) {
+    b.addEventListener('click', function () { applyTheme(b.dataset.theme); });
+  });
+
   /* ---------------- UI plumbing ---------------- */
   function toast(msg) {
     var t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -556,10 +598,11 @@
       // escape any sequence that would prematurely close the inline <style>/<script>
       var safeCss = css.replace(/<\/(style)/gi, '<\\/$1');
       var safeJs = js.replace(/<\/(script)/gi, '<\\/$1');
-      var html = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">' +
+      var html = '<!DOCTYPE html><html lang="ko" data-theme="' + (state.theme || 'kdt') + '"><head><meta charset="utf-8">' +
         '<meta name="viewport" content="width=device-width,initial-scale=1">' +
         '<title>' + escAttr(title) + '</title>' +
-        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:#4A3526}</style>' +
+        '<style>deck-stage:not(:defined){visibility:hidden}html,body{margin:0;background:#4A3526}' +
+          (window.DECK_LOGO ? ':root{--deck-logo:url("' + window.DECK_LOGO + '")}' : '') + '</style>' +
         '<style>' + safeCss + '</style></head><body>' +
         clone.outerHTML +
         '<scr' + 'ipt>' + safeJs + '</scr' + 'ipt></body></html>';

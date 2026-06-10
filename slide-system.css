@@ -6,6 +6,7 @@
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gothic+A1:wght@400;500;700;800;900&display=swap'); /* MSW 테마 폰트 */
 
 :root {
   /* 배경 / 컨테이너 — MapleStory 베이지(라이트) 테마 */
@@ -51,6 +52,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;        /* anchor for per-slide logo/border chrome */
   -webkit-font-smoothing: antialiased;
 }
 .slide *, .slide *::before, .slide *::after { box-sizing: border-box; }
@@ -60,6 +62,26 @@
 .slide .txt, .slide .eyebrow, .slide .ag-title, .slide p {
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+/* ---------- 슬라이드 브랜드 크롬: 로고(우측 상단) + 주황 외곽 테두리 (모든 슬라이드 공통 규정) ---------- */
+.slide::before {                 /* MapleStory 로고 — assets/msw-logo.png → --deck-logo (런타임 주입) */
+  content: '';
+  position: absolute;
+  top: 40px; right: 52px;
+  width: 200px; height: 98px;
+  background: var(--deck-logo, none) no-repeat right top / contain;
+  pointer-events: none;
+  z-index: 5;
+}
+.slide::after {                  /* 주황색 외곽 테두리 라인 */
+  content: '';
+  position: absolute;
+  inset: 22px;
+  border: 3px solid #E59440;
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 6;
 }
 
 /* ---------- agenda (개요) ---------- */
@@ -449,3 +471,80 @@ body.editing .frame::after {
   padding: 10px; opacity: 0; transition: opacity 0.15s; pointer-events: none;
 }
 body.editing .frame:hover::after { opacity: 1; }
+
+/* ============================================================
+   MSW 테마 — 메이플스토리 월드 코딩 교실 (비주얼 스킨)
+   html[data-theme="msw"]일 때만 토큰·폰트·꾸밈을 재정의한다.
+   KDT 테마 = 기본 :root 값(베이지+주황). 토글로 전환.
+   ============================================================ */
+html[data-theme="msw"] {
+  --bg: #fff8e6;
+  --bg-deep: #ffeecb;
+  --card: #fffdf6;             /* paper */
+  --img-frame: #fff5dd;
+  --border: #f3994f;          /* orange */
+  --accent: #f5a623;          /* 버섯 오렌지(mush) */
+  --accent-bg: #fff0d4;
+  --red: #f48fb6;             /* pink point */
+  --purple: #c4abe6;          /* lavender */
+  --amber: #ffce2e;           /* yellow */
+  --text: #2b2240;            /* ink */
+  --text-2: #5c5470;          /* ink-soft */
+  --muted: #9990ab;
+  --cell: #fffdf6;
+  --cell-alt: #fff3df;
+  --ink: #2b2240;
+  --font: 'Gothic A1', 'Pretendard', system-ui, sans-serif;   /* 본문 */
+  --mono: 'Jua', 'Gothic A1', sans-serif;                      /* 라벨·숫자 = Jua(통통) */
+}
+/* MSW 크림 그라데이션 배경 */
+html[data-theme="msw"] .slide {
+  background:
+    radial-gradient(1100px 760px at 86% -8%, #fff6d8 0%, transparent 60%),
+    radial-gradient(900px 700px at 4% 108%, #ffe6c2 0%, transparent 58%),
+    linear-gradient(160deg, #fff8e6 0%, #ffeecb 100%);
+}
+/* 디스플레이/제목/인용 = Jua (둥글고 통통) */
+html[data-theme="msw"] .slide h1,
+html[data-theme="msw"] .slide h2,
+html[data-theme="msw"] .slide h3,
+html[data-theme="msw"] .page-title,
+html[data-theme="msw"] .split-divider h1,
+html[data-theme="msw"] .case h2,
+html[data-theme="msw"] blockquote,
+html[data-theme="msw"] .agenda-item .ag-title {
+  font-family: 'Jua', 'Gothic A1', sans-serif;
+  letter-spacing: 0;
+  font-weight: 400;           /* Jua는 단일 굵기(자연스러운 통통체) */
+}
+/* 아이브로 = 알약형(pill) 라벨 + 콘텐츠 폭으로 축소 */
+html[data-theme="msw"] .eyebrow {
+  background: var(--accent-bg);
+  color: var(--accent);
+  padding: 8px 22px;
+  border-radius: 999px;
+  align-self: flex-start;
+  text-transform: none;
+}
+html[data-theme="msw"] .eyebrow.red { background: #fde6f0; color: var(--red); }
+/* MSW는 시안 라인 대신 pill을 쓰므로 divider 라인 숨김 */
+html[data-theme="msw"] .divider { display: none; }
+/* 카드: 더 둥글고 통통, 2px 보더 */
+html[data-theme="msw"] .card { border-radius: 36px; border-width: 2px; }
+html[data-theme="msw"] .icon { box-shadow: inset 0 0 0 2px #ffe1b0; }
+/* 포인트 컬러 순환 (pink → sky → lime → orange) — 카드 보더 */
+html[data-theme="msw"] .cards-3 .card:nth-child(1),
+html[data-theme="msw"] .refs .card:nth-child(1),
+html[data-theme="msw"] .cards-2 .card:nth-child(1) { border-color: #f48fb6; }
+html[data-theme="msw"] .cards-3 .card:nth-child(2),
+html[data-theme="msw"] .refs .card:nth-child(2),
+html[data-theme="msw"] .cards-2 .card:nth-child(2) { border-color: #5cc6f0; }
+html[data-theme="msw"] .cards-3 .card:nth-child(3),
+html[data-theme="msw"] .refs .card:nth-child(3) { border-color: #a9c63e; }
+html[data-theme="msw"] .refs .card:nth-child(4) { border-color: #f3994f; }
+/* 외곽 테두리도 MSW에선 더 통통하게 */
+html[data-theme="msw"] .slide::after {
+  border-color: var(--accent);
+  border-width: 4px;
+  border-radius: 28px;
+}

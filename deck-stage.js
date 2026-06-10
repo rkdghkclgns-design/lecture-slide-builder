@@ -122,7 +122,8 @@
   const stylesheet = `
     :host {
       position: fixed;
-      inset: 0;
+      top: var(--deck-top, 0px);   /* 호스트 앱에 헤더가 있으면 그 높이만큼 내려서 가림 방지 */
+      right: 0; bottom: 0; left: 0;
       display: block;
       background: #4A3526;
       color: #fff;
@@ -280,7 +281,7 @@
     .rail {
       position: fixed;
       left: 0;
-      top: 0;
+      top: var(--deck-top, 0px);
       bottom: 0;
       width: var(--deck-rail-w, 188px);
       background: #141414;
@@ -434,7 +435,7 @@
     .rail-resize {
       position: fixed;
       left: calc(var(--deck-rail-w, 188px) - 3px);
-      top: 0;
+      top: var(--deck-top, 0px);
       bottom: 0;
       width: 6px;
       cursor: col-resize;
@@ -1205,7 +1206,7 @@
       // the [rw, innerWidth] stage region.
       if (this._overlay) this._overlay.style.marginLeft = (rw / 2) + 'px';
       const vw = window.innerWidth - rw;
-      const vh = window.innerHeight;
+      const vh = this.clientHeight;   // 호스트 실제 높이(헤더 오프셋 반영) — full-viewport일 땐 innerHeight와 동일
       const s = Math.min(vw / this.designWidth, vh / this.designHeight);
       this._canvas.style.transform = `scale(${s})`;
     }

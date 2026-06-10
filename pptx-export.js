@@ -7,13 +7,26 @@
 (function (global) {
   'use strict';
 
-  // tokens (no #)
-  var C = {
+  // tokens (no #) — 테마별 색 (KDT 베이지+주황 / MSW 크림+파스텔)
+  var C_KDT = {
     bg: 'FBF3E1', deep: 'F1E1C2', card: 'FFFCF4', frame: 'F5EAD3', border: 'E59440',
     accent: 'C9661C', accentBg: 'FBE6CC', red: 'D4543A', purple: '8E63C6', amber: 'C8861E',
     text: '2E2114', text2: '5C4A37', muted: 'A2895F', cell: 'FFFFFF', cellAlt: 'FBEFD8', ink: '3A2A1A'
   };
+  var C_MSW = {
+    bg: 'FFF8E6', deep: 'FFEECB', card: 'FFFDF6', frame: 'FFF5DD', border: 'F3994F',
+    accent: 'F5A623', accentBg: 'FFF0D4', red: 'F48FB6', purple: 'C4ABE6', amber: 'FFCE2E',
+    text: '2B2240', text2: '5C5470', muted: '9990AB', cell: 'FFFDF6', cellAlt: 'FFF3DF', ink: '2B2240'
+  };
+  var C = C_KDT;
   var FONT = 'Pretendard', MONO = 'JetBrains Mono';
+  // export 시 현재 테마(html[data-theme])에 맞춰 색·폰트를 선택한다.
+  function pickTheme() {
+    var msw = (typeof document !== 'undefined') && document.documentElement.getAttribute('data-theme') === 'msw';
+    C = msw ? C_MSW : C_KDT;
+    FONT = msw ? 'Gothic A1' : 'Pretendard';
+    MONO = msw ? 'Jua' : 'JetBrains Mono';
+  }
   function IN(px) { return px / 144; }
   function PT(px) { return px * 0.5; }
 
@@ -296,6 +309,7 @@
      export entry
      ============================================================ */
   async function exportPptx(deck, fileName, onProgress) {
+    pickTheme();
     var secs = qa(deck, 'section.slide');
     var pptx = new global.PptxGenJS();
     pptx.defineLayout({ name: 'W169', width: 13.333, height: 7.5 });
@@ -311,6 +325,15 @@
       if (!sec.classList.contains('bleed')) {
         slide.addText([{ text: String(i + 1).padStart(2, '0'), options: { color: C.accent, bold: true } }, { text: ' / ' + String(secs.length).padStart(2, '0'), options: { color: C.text2 } }],
           { x: IN(1020), y: IN(1000), w: IN(800), h: IN(36), fontFace: MONO, fontSize: PT(20), align: 'right', valign: 'middle', charSpacing: 1 });
+      }
+      // 브랜드 크롬: 주황 외곽 테두리 + 로고(우측 상단) — 모든 슬라이드 공통
+      slide.addShape('roundRect', { x: IN(22), y: IN(22), w: IN(1876), h: IN(1036), rectRadius: IN(18),
+        fill: { type: 'none' }, line: { color: C.border, width: 3 } });
+      if (global.DECK_LOGO) {
+        try {
+          slide.addImage({ data: global.DECK_LOGO, x: IN(1668), y: IN(40), w: IN(200), h: IN(98),
+            sizing: { type: 'contain', w: IN(200), h: IN(98) } });
+        } catch (e) { /* invalid logo data → skip */ }
       }
       if (onProgress) onProgress(i + 1, secs.length);
     }
